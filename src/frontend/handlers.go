@@ -75,14 +75,14 @@ func (fe *frontendServer) homeHandler(w http.ResponseWriter, r *http.Request) {
 		Price *pb.Money
 	}
 	ps := make([]productView, len(products))
-	for i, p := range products {
-		price, err := fe.convertCurrency(r.Context(), p.GetPriceUsd(), currentCurrency(r))
-		if err != nil {
-			renderHTTPError(log, r, w, errors.Wrapf(err, "failed to do currency conversion for product %s", p.GetId()), http.StatusInternalServerError)
-			return
-		}
-		ps[i] = productView{p, price}
-	}
+	// for i, p := range products {
+	// 	price, err := fe.convertCurrency(r.Context(), p.GetPriceUsd(), currentCurrency(r))
+	// 	if err != nil {
+	// 		renderHTTPError(log, r, w, errors.Wrapf(err, "failed to do currency conversion for product %s", p.GetId()), http.StatusInternalServerError)
+	// 		return
+	// 	}
+	// 	ps[i] = productView{p, price}
+	// }
 
 	// Set ENV_PLATFORM (default to local if not set; use env var if set; otherwise detect GCP, which overrides env)_
 	var env = os.Getenv("ENV_PLATFORM")
