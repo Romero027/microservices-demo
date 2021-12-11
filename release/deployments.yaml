@@ -26,6 +26,8 @@ spec:
       app: emailservice
   template:
     metadata:
+      annotations:
+        sidecar.istio.io/inject: "false"
       labels:
         app: emailservice
     spec:
@@ -69,6 +71,8 @@ spec:
       app: checkoutservice
   template:
     metadata:
+      annotations:
+        sidecar.istio.io/inject: "false"
       labels:
         app: checkoutservice
     spec:
@@ -125,6 +129,8 @@ spec:
       app: recommendationservice
   template:
     metadata:
+      annotations:
+        sidecar.istio.io/inject: "false"
       labels:
         app: recommendationservice
     spec:
@@ -176,8 +182,10 @@ spec:
         app: frontend
       annotations:
         sidecar.istio.io/rewriteAppHTTPProbers: "true"
+        # sidecar.istio.io/inject: "false"
     spec:
       serviceAccountName: default
+      nodeName: h3.baremental.meshbench-pg0.clemson.cloudlab.us
       containers:
         - name: server
           image: xzhu0027/online_boutique_frontend:latest
@@ -249,6 +257,8 @@ spec:
     metadata:
       labels:
         app: paymentservice
+      annotations:
+        sidecar.istio.io/inject: "false"
     spec:
       serviceAccountName: default
       terminationGracePeriodSeconds: 5
@@ -286,9 +296,12 @@ spec:
     metadata:
       labels:
         app: productcatalogservice
+      # annotations:
+      #   sidecar.istio.io/inject: "false"
     spec:
       serviceAccountName: default
       terminationGracePeriodSeconds: 5
+      nodeName: h3.baremental.meshbench-pg0.clemson.cloudlab.us
       containers:
       - name: server
         image: gcr.io/google-samples/microservices-demo/productcatalogservice:v0.3.0
@@ -331,9 +344,12 @@ spec:
     metadata:
       labels:
         app: cartservice
+      # annotations:
+      #   sidecar.istio.io/inject: "false"      
     spec:
       serviceAccountName: default
       terminationGracePeriodSeconds: 5
+      nodeName: h3.baremental.meshbench-pg0.clemson.cloudlab.us
       containers:
       - name: server
         image: xzhu0027/online_boutique_cart:latest
@@ -370,11 +386,14 @@ spec:
       app: currencyservice
   template:
     metadata:
+      # annotations:
+      #   sidecar.istio.io/inject: "false"
       labels:
         app: currencyservice
     spec:
       serviceAccountName: default
       terminationGracePeriodSeconds: 5
+      nodeName: h3.baremental.meshbench-pg0.clemson.cloudlab.us
       containers:
       - name: server
         image: gcr.io/google-samples/microservices-demo/currencyservice:v0.3.0
@@ -414,6 +433,8 @@ spec:
       app: shippingservice
   template:
     metadata:
+      annotations:
+        sidecar.istio.io/inject: "false"
       labels:
         app: shippingservice
     spec:
@@ -455,6 +476,8 @@ metadata:
   name: redis-cart
 spec:
   selector:
+    annotations:
+      sidecar.istio.io/inject: "false"
     matchLabels:
       app: redis-cart
   template:
@@ -495,6 +518,8 @@ metadata:
   name: adservice
 spec:
   selector:
+    annotations:
+      sidecar.istio.io/inject: "false"
     matchLabels:
       app: adservice
   template:
