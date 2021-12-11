@@ -26,6 +26,8 @@ spec:
       app: emailservice
   template:
     metadata:
+      annotations:
+        sidecar.istio.io/inject: "false"
       labels:
         app: emailservice
     spec:
@@ -59,19 +61,6 @@ spec:
             cpu: 200m
             memory: 128Mi
 ---
-apiVersion: v1
-kind: Service
-metadata:
-  name: emailservice
-spec:
-  type: ClusterIP
-  selector:
-    app: emailservice
-  ports:
-  - name: grpc
-    port: 5000
-    targetPort: 8080
----
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -82,6 +71,8 @@ spec:
       app: checkoutservice
   template:
     metadata:
+      annotations:
+        sidecar.istio.io/inject: "false"
       labels:
         app: checkoutservice
     spec:
@@ -128,19 +119,6 @@ spec:
               cpu: 200m
               memory: 128Mi
 ---
-apiVersion: v1
-kind: Service
-metadata:
-  name: checkoutservice
-spec:
-  type: ClusterIP
-  selector:
-    app: checkoutservice
-  ports:
-  - name: grpc
-    port: 5050
-    targetPort: 5050
----
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -151,6 +129,8 @@ spec:
       app: recommendationservice
   template:
     metadata:
+      annotations:
+        sidecar.istio.io/inject: "false"
       labels:
         app: recommendationservice
     spec:
@@ -188,19 +168,6 @@ spec:
             cpu: 200m
             memory: 450Mi
 ---
-apiVersion: v1
-kind: Service
-metadata:
-  name: recommendationservice
-spec:
-  type: ClusterIP
-  selector:
-    app: recommendationservice
-  ports:
-  - name: grpc
-    port: 8080
-    targetPort: 8080
----
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -215,8 +182,10 @@ spec:
         app: frontend
       annotations:
         sidecar.istio.io/rewriteAppHTTPProbers: "true"
+        # sidecar.istio.io/inject: "false"
     spec:
       serviceAccountName: default
+      nodeName: h2.baremental.meshbench-pg0.clemson.cloudlab.us
       containers:
         - name: server
           image: xzhu0027/online_boutique_frontend:latest
@@ -276,33 +245,6 @@ spec:
               cpu: 200m
               memory: 128Mi
 ---
-apiVersion: v1
-kind: Service
-metadata:
-  name: frontend
-spec:
-  type: ClusterIP
-  clusterIP: 10.96.7.56
-  selector:
-    app: frontend
-  ports:
-  - name: http
-    port: 80
-    targetPort: 8080
----
-apiVersion: v1
-kind: Service
-metadata:
-  name: frontend-external
-spec:
-  type: LoadBalancer
-  selector:
-    app: frontend
-  ports:
-  - name: http
-    port: 80
-    targetPort: 8080
----
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -315,6 +257,8 @@ spec:
     metadata:
       labels:
         app: paymentservice
+      annotations:
+        sidecar.istio.io/inject: "false"
     spec:
       serviceAccountName: default
       terminationGracePeriodSeconds: 5
@@ -340,19 +284,6 @@ spec:
             cpu: 200m
             memory: 128Mi
 ---
-apiVersion: v1
-kind: Service
-metadata:
-  name: paymentservice
-spec:
-  type: ClusterIP
-  selector:
-    app: paymentservice
-  ports:
-  - name: grpc
-    port: 50051
-    targetPort: 50051
----
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -365,9 +296,12 @@ spec:
     metadata:
       labels:
         app: productcatalogservice
+      # annotations:
+      #   sidecar.istio.io/inject: "false"
     spec:
       serviceAccountName: default
       terminationGracePeriodSeconds: 5
+      nodeName: h2.baremental.meshbench-pg0.clemson.cloudlab.us
       containers:
       - name: server
         image: gcr.io/google-samples/microservices-demo/productcatalogservice:v0.3.0
@@ -398,19 +332,6 @@ spec:
             cpu: 200m
             memory: 128Mi
 ---
-apiVersion: v1
-kind: Service
-metadata:
-  name: productcatalogservice
-spec:
-  type: ClusterIP
-  selector:
-    app: productcatalogservice
-  ports:
-  - name: grpc
-    port: 3550
-    targetPort: 3550
----
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -423,9 +344,12 @@ spec:
     metadata:
       labels:
         app: cartservice
+      # annotations:
+      #   sidecar.istio.io/inject: "false"      
     spec:
       serviceAccountName: default
       terminationGracePeriodSeconds: 5
+      nodeName: h2.baremental.meshbench-pg0.clemson.cloudlab.us
       containers:
       - name: server
         image: xzhu0027/online_boutique_cart:latest
@@ -452,70 +376,6 @@ spec:
           exec:
             command: ["/bin/grpc_health_probe", "-addr=:7070", "-rpc-timeout=5s"]
 ---
-apiVersion: v1
-kind: Service
-metadata:
-  name: cartservice
-spec:
-  type: ClusterIP
-  selector:
-    app: cartservice
-  ports:
-  - name: grpc
-    port: 7070
-    targetPort: 7070
----
-# apiVersion: apps/v1
-# kind: Deployment
-# metadata:
-#   name: loadgenerator
-# spec:
-#   selector:
-#     matchLabels:
-#       app: loadgenerator
-#   replicas: 1
-#   template:
-#     metadata:
-#       labels:
-#         app: loadgenerator
-#       annotations:
-#         sidecar.istio.io/rewriteAppHTTPProbers: "true"
-#     spec:
-#       serviceAccountName: default
-#       terminationGracePeriodSeconds: 5
-#       restartPolicy: Always
-#       initContainers:
-#       - command:
-#         - /bin/sh
-#         - -exc
-#         - |
-#           echo "Init container pinging frontend: ${FRONTEND_ADDR}..."
-#           STATUSCODE=$(wget --server-response http://${FRONTEND_ADDR} 2>&1 | awk '/^  HTTP/{print $2}')
-#           if test $STATUSCODE -ne 200; then
-#               echo "Error: Could not reach frontend - Status code: ${STATUSCODE}"
-#               exit 1
-#           fi
-#         name: frontend-check
-#         image: busybox:latest
-#         env:
-#         - name: FRONTEND_ADDR
-#           value: "frontend:80"
-#       containers:
-#       - name: main
-#         image: gcr.io/google-samples/microservices-demo/loadgenerator:v0.3.0
-#         env:
-#         - name: FRONTEND_ADDR
-#           value: "frontend:80"
-#         - name: USERS
-#           value: "10"
-#         resources:
-#           requests:
-#             cpu: 300m
-#             memory: 256Mi
-#           limits:
-#             cpu: 500m
-#             memory: 512Mi
-# ---
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -526,11 +386,14 @@ spec:
       app: currencyservice
   template:
     metadata:
+      # annotations:
+      #   sidecar.istio.io/inject: "false"
       labels:
         app: currencyservice
     spec:
       serviceAccountName: default
       terminationGracePeriodSeconds: 5
+      nodeName: h2.baremental.meshbench-pg0.clemson.cloudlab.us
       containers:
       - name: server
         image: gcr.io/google-samples/microservices-demo/currencyservice:v0.3.0
@@ -560,19 +423,6 @@ spec:
             cpu: 200m
             memory: 128Mi
 ---
-apiVersion: v1
-kind: Service
-metadata:
-  name: currencyservice
-spec:
-  type: ClusterIP
-  selector:
-    app: currencyservice
-  ports:
-  - name: grpc
-    port: 7000
-    targetPort: 7000
----
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -583,6 +433,8 @@ spec:
       app: shippingservice
   template:
     metadata:
+      annotations:
+        sidecar.istio.io/inject: "false"
       labels:
         app: shippingservice
     spec:
@@ -618,19 +470,6 @@ spec:
             cpu: 200m
             memory: 128Mi
 ---
-apiVersion: v1
-kind: Service
-metadata:
-  name: shippingservice
-spec:
-  type: ClusterIP
-  selector:
-    app: shippingservice
-  ports:
-  - name: grpc
-    port: 50051
-    targetPort: 50051
----
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -643,6 +482,8 @@ spec:
     metadata:
       labels:
         app: redis-cart
+      annotations:
+        sidecar.istio.io/inject: "false"
     spec:
       containers:
       - name: redis
@@ -671,19 +512,6 @@ spec:
       - name: redis-data
         emptyDir: {}
 ---
-apiVersion: v1
-kind: Service
-metadata:
-  name: redis-cart
-spec:
-  type: ClusterIP
-  selector:
-    app: redis-cart
-  ports:
-  - name: redis
-    port: 6379
-    targetPort: 6379
----
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -696,6 +524,8 @@ spec:
     metadata:
       labels:
         app: adservice
+      annotations:
+        sidecar.istio.io/inject: "false"
     spec:
       serviceAccountName: default
       terminationGracePeriodSeconds: 5
@@ -731,16 +561,4 @@ spec:
           exec:
             command: ["/bin/grpc_health_probe", "-addr=:9555"]
 ---
-apiVersion: v1
-kind: Service
-metadata:
-  name: adservice
-spec:
-  type: ClusterIP
-  selector:
-    app: adservice
-  ports:
-  - name: grpc
-    port: 9555
-    targetPort: 9555
----
+
