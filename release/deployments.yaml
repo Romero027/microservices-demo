@@ -185,7 +185,7 @@ spec:
         # sidecar.istio.io/inject: "false"
     spec:
       serviceAccountName: default
-      nodeName: h3.baremental.meshbench-pg0.clemson.cloudlab.us
+      nodeName: h2.baremental.meshbench-pg0.clemson.cloudlab.us
       containers:
         - name: server
           image: xzhu0027/online_boutique_frontend:latest
@@ -301,7 +301,7 @@ spec:
     spec:
       serviceAccountName: default
       terminationGracePeriodSeconds: 5
-      nodeName: h3.baremental.meshbench-pg0.clemson.cloudlab.us
+      nodeName: h2.baremental.meshbench-pg0.clemson.cloudlab.us
       containers:
       - name: server
         image: gcr.io/google-samples/microservices-demo/productcatalogservice:v0.3.0
@@ -349,7 +349,7 @@ spec:
     spec:
       serviceAccountName: default
       terminationGracePeriodSeconds: 5
-      nodeName: h3.baremental.meshbench-pg0.clemson.cloudlab.us
+      nodeName: h2.baremental.meshbench-pg0.clemson.cloudlab.us
       containers:
       - name: server
         image: xzhu0027/online_boutique_cart:latest
@@ -393,7 +393,7 @@ spec:
     spec:
       serviceAccountName: default
       terminationGracePeriodSeconds: 5
-      nodeName: h3.baremental.meshbench-pg0.clemson.cloudlab.us
+      nodeName: h2.baremental.meshbench-pg0.clemson.cloudlab.us
       containers:
       - name: server
         image: gcr.io/google-samples/microservices-demo/currencyservice:v0.3.0
@@ -476,14 +476,14 @@ metadata:
   name: redis-cart
 spec:
   selector:
-    annotations:
-      sidecar.istio.io/inject: "false"
     matchLabels:
       app: redis-cart
   template:
     metadata:
       labels:
         app: redis-cart
+      annotations:
+        sidecar.istio.io/inject: "false"
     spec:
       containers:
       - name: redis
@@ -518,14 +518,14 @@ metadata:
   name: adservice
 spec:
   selector:
-    annotations:
-      sidecar.istio.io/inject: "false"
     matchLabels:
       app: adservice
   template:
     metadata:
       labels:
         app: adservice
+      annotations:
+        sidecar.istio.io/inject: "false"
     spec:
       serviceAccountName: default
       terminationGracePeriodSeconds: 5

@@ -19,33 +19,8 @@ local function index()
 
   local headers = {}
   return wrk.format(method, path, headers, nil)
-
-local function set_currency()
-  local currencies = {'EUR', 'USD', 'JPY', 'CAD'}
-  local method = "POST"
-  local body = "currency_code=" .. currencies[math.random(#currencies)]
-  local path = "http://localhost/setCurrency/"
-
-  local headers = {}
-  return wrk.format(method, path, headers, body)
-
-local function browse_product()
-  local method = "GET"
-  local body = products[math.random(#products)]
-  local path = "http://localhost/product/"
-
-  local headers = {}
-  return wrk.format(method, path, headers, body)
-
-local function view_cart()
-  local method = "GET"
-  local path = "http://localhost/cart"
-
-  local headers = {}
-  return wrk.format(method, path, headers, nil)
-
+end
 
 request = function()
     return index()
-  end
 end
