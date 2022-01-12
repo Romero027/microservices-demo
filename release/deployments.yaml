@@ -173,6 +173,7 @@ kind: Deployment
 metadata:
   name: frontend
 spec:
+  replicas: 6
   selector:
     matchLabels:
       app: frontend
@@ -289,6 +290,7 @@ kind: Deployment
 metadata:
   name: productcatalogservice
 spec:
+  replicas: 6
   selector:
     matchLabels:
       app: productcatalogservice
@@ -301,7 +303,7 @@ spec:
     spec:
       serviceAccountName: default
       terminationGracePeriodSeconds: 5
-      nodeName: h2.baremental.meshbench-pg0.clemson.cloudlab.us
+      nodeName: h3.baremental.meshbench-pg0.clemson.cloudlab.us
       containers:
       - name: server
         image: gcr.io/google-samples/microservices-demo/productcatalogservice:v0.3.0
@@ -337,6 +339,7 @@ kind: Deployment
 metadata:
   name: cartservice
 spec:
+  replicas: 6
   selector:
     matchLabels:
       app: cartservice
@@ -349,7 +352,7 @@ spec:
     spec:
       serviceAccountName: default
       terminationGracePeriodSeconds: 5
-      nodeName: h2.baremental.meshbench-pg0.clemson.cloudlab.us
+      nodeName: h3.baremental.meshbench-pg0.clemson.cloudlab.us
       containers:
       - name: server
         image: xzhu0027/online_boutique_cart:latest
@@ -381,6 +384,7 @@ kind: Deployment
 metadata:
   name: currencyservice
 spec:
+  replicas: 6
   selector:
     matchLabels:
       app: currencyservice
@@ -393,7 +397,7 @@ spec:
     spec:
       serviceAccountName: default
       terminationGracePeriodSeconds: 5
-      nodeName: h2.baremental.meshbench-pg0.clemson.cloudlab.us
+      nodeName: h4.baremental.meshbench-pg0.clemson.cloudlab.us
       containers:
       - name: server
         image: gcr.io/google-samples/microservices-demo/currencyservice:v0.3.0
@@ -475,6 +479,7 @@ kind: Deployment
 metadata:
   name: redis-cart
 spec:
+  replicas: 6
   selector:
     matchLabels:
       app: redis-cart
@@ -517,6 +522,7 @@ kind: Deployment
 metadata:
   name: adservice
 spec:
+  replicas: 6
   selector:
     matchLabels:
       app: adservice
@@ -524,11 +530,12 @@ spec:
     metadata:
       labels:
         app: adservice
-      annotations:
-        sidecar.istio.io/inject: "false"
+      # annotations:
+      #   sidecar.istio.io/inject: "false"
     spec:
       serviceAccountName: default
       terminationGracePeriodSeconds: 5
+      nodeName: h4.baremental.meshbench-pg0.clemson.cloudlab.us
       containers:
       - name: server
         image: gcr.io/google-samples/microservices-demo/adservice:v0.3.4
