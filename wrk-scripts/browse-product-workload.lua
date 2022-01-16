@@ -19,6 +19,7 @@ local function index()
 
   local headers = {}
   return wrk.format(method, path, headers, nil)
+end
 
 local function set_currency()
   local currencies = {'EUR', 'USD', 'JPY', 'CAD'}
@@ -28,6 +29,7 @@ local function set_currency()
 
   local headers = {}
   return wrk.format(method, path, headers, body)
+end
 
 local function browse_product()
   local method = "GET"
@@ -35,6 +37,7 @@ local function browse_product()
 
   local headers = {}
   return wrk.format(method, path, headers, nil)
+end
 
 local function view_cart()
   local method = "GET"
@@ -42,9 +45,8 @@ local function view_cart()
 
   local headers = {}
   return wrk.format(method, path, headers, nil)
-
+end
 
 request = function()
     return browse_product()
-  end
 end
