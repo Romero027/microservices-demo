@@ -23,3 +23,6 @@ kubectl label namespace default istio-injection=enabled
 kubectl label namespace default istio-injection-
 
 wrk -t 1 -c 1 -d 30 -s <lua-script> -L http://10.96.7.56/
+curl 10.96.7.56/product/0PUK6V6EV0 # browseProduct
+curl 10.96.7.56/cart # viewCart
+curl 10.96.7.56 #index

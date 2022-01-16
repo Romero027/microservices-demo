@@ -45,6 +45,6 @@ local function view_cart()
 
 
 request = function()
-    return index()
+    return view_cart()
   end
 end
