@@ -160,19 +160,20 @@ spec:
           value: "1"
         - name: DISABLE_DEBUGGER
           value: "1"
-        resources:
-          requests:
-            cpu: 100m
-            memory: 220Mi
-          limits:
-            cpu: 200m
-            memory: 450Mi
+        # resources:
+        #   requests:
+        #     cpu: 100m
+        #     memory: 220Mi
+        #   limits:
+        #     cpu: 200m
+        #     memory: 450Mi
 ---
 apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: frontend
 spec:
+  replicas: 6
   selector:
     matchLabels:
       app: frontend
@@ -185,7 +186,7 @@ spec:
         # sidecar.istio.io/inject: "false"
     spec:
       serviceAccountName: default
-      nodeName: h3.baremental.meshbench-pg0.clemson.cloudlab.us
+      nodeName: h2.baremental.meshbench-pg0.clemson.cloudlab.us
       containers:
         - name: server
           image: xzhu0027/online_boutique_frontend:latest
@@ -237,13 +238,13 @@ spec:
           #   value: "jaeger-collector:14268"
           # - name: CYMBAL_BRANDING
           #   value: "true"
-          resources:
-            requests:
-              cpu: 100m
-              memory: 64Mi
-            limits:
-              cpu: 200m
-              memory: 128Mi
+          # resources:
+          #   requests:
+          #     cpu: 100m
+          #     memory: 64Mi
+          #   limits:
+          #     cpu: 200m
+          #     memory: 128Mi
 ---
 apiVersion: apps/v1
 kind: Deployment
@@ -276,19 +277,20 @@ spec:
         livenessProbe:
           exec:
             command: ["/bin/grpc_health_probe", "-addr=:50051"]
-        resources:
-          requests:
-            cpu: 100m
-            memory: 64Mi
-          limits:
-            cpu: 200m
-            memory: 128Mi
+        # resources:
+        #   requests:
+        #     cpu: 100m
+        #     memory: 64Mi
+        #   limits:
+        #     cpu: 200m
+        #     memory: 128Mi
 ---
 apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: productcatalogservice
 spec:
+  replicas: 6
   selector:
     matchLabels:
       app: productcatalogservice
@@ -324,19 +326,20 @@ spec:
         livenessProbe:
           exec:
             command: ["/bin/grpc_health_probe", "-addr=:3550"]
-        resources:
-          requests:
-            cpu: 100m
-            memory: 64Mi
-          limits:
-            cpu: 200m
-            memory: 128Mi
+        # resources:
+        #   requests:
+        #     cpu: 100m
+        #     memory: 64Mi
+        #   limits:
+        #     cpu: 200m
+        #     memory: 128Mi
 ---
 apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: cartservice
 spec:
+  replicas: 6
   selector:
     matchLabels:
       app: cartservice
@@ -359,13 +362,13 @@ spec:
         env:
         - name: REDIS_ADDR
           value: "redis-cart:6379"
-        resources:
-          requests:
-            cpu: 200m
-            memory: 64Mi
-          limits:
-            cpu: 300m
-            memory: 128Mi
+        # resources:
+        #   requests:
+        #     cpu: 200m
+        #     memory: 64Mi
+        #   limits:
+        #     cpu: 300m
+        #     memory: 128Mi
         readinessProbe:
           initialDelaySeconds: 15
           exec:
@@ -381,6 +384,7 @@ kind: Deployment
 metadata:
   name: currencyservice
 spec:
+  replicas: 6
   selector:
     matchLabels:
       app: currencyservice
@@ -393,7 +397,7 @@ spec:
     spec:
       serviceAccountName: default
       terminationGracePeriodSeconds: 5
-      nodeName: h3.baremental.meshbench-pg0.clemson.cloudlab.us
+      nodeName: h4.baremental.meshbench-pg0.clemson.cloudlab.us
       containers:
       - name: server
         image: gcr.io/google-samples/microservices-demo/currencyservice:v0.3.0
@@ -415,13 +419,13 @@ spec:
         livenessProbe:
           exec:
             command: ["/bin/grpc_health_probe", "-addr=:7000"]
-        resources:
-          requests:
-            cpu: 100m
-            memory: 64Mi
-          limits:
-            cpu: 200m
-            memory: 128Mi
+        # resources:
+        #   requests:
+        #     cpu: 100m
+        #     memory: 64Mi
+        #   limits:
+        #     cpu: 200m
+        #     memory: 128Mi
 ---
 apiVersion: apps/v1
 kind: Deployment
@@ -462,28 +466,29 @@ spec:
         livenessProbe:
           exec:
             command: ["/bin/grpc_health_probe", "-addr=:50051"]
-        resources:
-          requests:
-            cpu: 100m
-            memory: 64Mi
-          limits:
-            cpu: 200m
-            memory: 128Mi
+        # resources:
+        #   requests:
+        #     cpu: 100m
+        #     memory: 64Mi
+        #   limits:
+        #     cpu: 200m
+        #     memory: 128Mi
 ---
 apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: redis-cart
 spec:
+  replicas: 6
   selector:
-    annotations:
-      sidecar.istio.io/inject: "false"
     matchLabels:
       app: redis-cart
   template:
     metadata:
       labels:
         app: redis-cart
+      annotations:
+        sidecar.istio.io/inject: "false"
     spec:
       containers:
       - name: redis
@@ -501,13 +506,13 @@ spec:
         volumeMounts:
         - mountPath: /data
           name: redis-data
-        resources:
-          limits:
-            memory: 256Mi
-            cpu: 125m
-          requests:
-            cpu: 70m
-            memory: 200Mi
+        # resources:
+        #   limits:
+        #     memory: 256Mi
+        #     cpu: 125m
+        #   requests:
+        #     cpu: 70m
+        #     memory: 200Mi
       volumes:
       - name: redis-data
         emptyDir: {}
@@ -517,21 +522,23 @@ kind: Deployment
 metadata:
   name: adservice
 spec:
+  replicas: 6
   selector:
-    annotations:
-      sidecar.istio.io/inject: "false"
     matchLabels:
       app: adservice
   template:
     metadata:
       labels:
         app: adservice
+      # annotations:
+      #   sidecar.istio.io/inject: "false"
     spec:
       serviceAccountName: default
       terminationGracePeriodSeconds: 5
+      nodeName: h4.baremental.meshbench-pg0.clemson.cloudlab.us
       containers:
       - name: server
-        image: gcr.io/google-samples/microservices-demo/adservice:v0.3.0
+        image: gcr.io/google-samples/microservices-demo/adservice:v0.3.4
         ports:
         - containerPort: 9555
         env:
@@ -543,13 +550,13 @@ spec:
           value: "1"
         # - name: JAEGER_SERVICE_ADDR
         #   value: "jaeger-collector:14268"
-        resources:
-          requests:
-            cpu: 200m
-            memory: 180Mi
-          limits:
-            cpu: 300m
-            memory: 300Mi
+        # resources:
+        #   requests:
+        #     cpu: 200m
+        #     memory: 180Mi
+        #   limits:
+        #     cpu: 300m
+        #     memory: 300Mi
         readinessProbe:
           initialDelaySeconds: 20
           periodSeconds: 15

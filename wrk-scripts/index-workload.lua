@@ -43,8 +43,6 @@ local function view_cart()
   local headers = {}
   return wrk.format(method, path, headers, nil)
 
-
 request = function()
     return index()
-  end
 end
