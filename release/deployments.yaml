@@ -298,8 +298,8 @@ spec:
     metadata:
       labels:
         app: productcatalogservice
-      # annotations:
-      #   sidecar.istio.io/inject: "false"
+      annotations:
+        sidecar.istio.io/inject: "false"
     spec:
       serviceAccountName: default
       terminationGracePeriodSeconds: 5
@@ -432,17 +432,19 @@ kind: Deployment
 metadata:
   name: shippingservice
 spec:
+  replicas: 1
   selector:
     matchLabels:
       app: shippingservice
   template:
     metadata:
-      annotations:
-        sidecar.istio.io/inject: "false"
+      # annotations:
+      #   sidecar.istio.io/inject: "false"
       labels:
         app: shippingservice
     spec:
       serviceAccountName: default
+      nodeName: h2.baremental.meshbench-pg0.clemson.cloudlab.us
       containers:
       - name: server
         image: gcr.io/google-samples/microservices-demo/shippingservice:v0.3.0
